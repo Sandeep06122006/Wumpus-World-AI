@@ -15,6 +15,7 @@ class WumpusWorld:
             
         # Agent state
         self.agent_pos = (0, 0)
+        self.agent_dir = 'E' # Direction: N = North, S = South, E = East, W = West
         self.agent_has_gold = False
         self.agent_has_arrow = True
         self.agent_alive = True
@@ -33,6 +34,23 @@ class WumpusWorld:
         # Generate the world elements safely
         self._generate_world()
         
+    def get_dir_coord(self):
+        """Returns the agent direction and coordinates in format: S(0,0), N(1,2), etc."""
+        return f"{self.agent_dir}({self.agent_pos[0]},{self.agent_pos[1]})"
+
+    def _update_direction(self, target_pos):
+        """Updates agent direction based on target position."""
+        dx = target_pos[0] - self.agent_pos[0]
+        dy = target_pos[1] - self.agent_pos[1]
+        if dx > 0:
+            self.agent_dir = 'E'
+        elif dx < 0:
+            self.agent_dir = 'W'
+        elif dy > 0:
+            self.agent_dir = 'N'
+        elif dy < 0:
+            self.agent_dir = 'S'
+
     def _get_neighbors(self, pos):
         """Returns valid adjacent cells (Up, Down, Left, Right)."""
         x, y = pos
@@ -115,17 +133,18 @@ class WumpusWorld:
         if action_name == 'MOVE_TO':
             target_pos = action[1]
             if target_pos in self._get_neighbors(self.agent_pos):
+                self._update_direction(target_pos)
                 self.agent_pos = target_pos
                 self.bump_occurred = False
                 
                 # Check hazards
                 if self.agent_pos in self.pits:
                     self.agent_alive = False
-                    return "Fell into a pit!"
+                    return f"Fell into a pit at {self.get_dir_coord()}!"
                 elif self.agent_pos == self.wumpus_pos and self.wumpus_alive:
                     self.agent_alive = False
-                    return "Eaten by the Wumpus!"
-                return f"Moved to {self.agent_pos}"
+                    return f"Eaten by the Wumpus at {self.get_dir_coord()}!"
+                return f"Moved to {self.get_dir_coord()}"
             else:
                 self.bump_occurred = True
                 return "Bumped into a wall!"
@@ -133,7 +152,7 @@ class WumpusWorld:
         elif action_name == 'GRAB':
             if self.agent_pos == self.gold_pos and not self.agent_has_gold:
                 self.agent_has_gold = True
-                return "Grabbed the Gold!"
+                return f"Grabbed the Gold at {self.get_dir_coord()}!"
             return "No gold here to grab."
 
         elif action_name == 'SHOOT':
@@ -142,6 +161,7 @@ class WumpusWorld:
             
             self.agent_has_arrow = False
             target_pos = action[1]
+            self._update_direction(target_pos)
             
             # Calculate direction vector
             dx = target_pos[0] - self.agent_pos[0]

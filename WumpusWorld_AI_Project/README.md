@@ -109,16 +109,26 @@ WumpusWorld_AI_Project/
 
 ## 8. How to Run the Project
 
-### A. Running the Console Version
+### A. Running the Standalone Interactive Web App (Recommended)
+You can directly open `index.html` in any web browser without needing any background Python servers:
+- **Double click** [index.html](file:///c:/Users/sande/OneDrive/Desktop/Wumpus-World-AI/index.html) or run `run_web.bat`.
+- Features real-time animated 4×4 cave grid, audio effects, live sensor percepts HUD, Knowledge Base inspector, DPLL SAT solver & Forward Chaining telemetry, A*/BFS path visualizer, and manual play mode.
+
+### B. Running the Streamlit Web Application
+To launch the interactive graphical Streamlit dashboard:
+```bash
+python -m streamlit run visualization.py
+```
+Or use the launcher:
+```bash
+run_web.bat
+```
+Then visit `http://localhost:8501` in your browser.
+
+### C. Running the Console Version
 To run the automated console simulation with real-time ASCII grid traces:
 ```bash
 python main.py
-```
-
-### B. Running the Streamlit Web Application
-To launch the interactive graphical user interface in your web browser:
-```bash
-streamlit run visualization.py
 ```
 
 ---

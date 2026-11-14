@@ -19,7 +19,7 @@ def print_grid(world, agent, reveal_all=False):
             
             # Agent representation
             if cell == world.agent_pos:
-                symbols.append("A")
+                symbols.append(world.agent_dir) # N, S, E, W
                 
             # Hazards and Items (Revealed if visited or if reveal_all is True)
             if reveal_all or cell in agent.kb.visited:
@@ -66,7 +66,8 @@ def run_simulation(seed=42, search_algo='A*', max_steps=40, delay=0.5):
         
         # 1. Agent receives current percepts
         percepts = world.get_percepts()
-        print(f"Agent Percepts at {world.agent_pos}:")
+        print(f"Agent State   : {world.get_dir_coord()} [Direction: {world.agent_dir}]")
+        print(f"Agent Percepts at {world.get_dir_coord()}:")
         print(f"  [Stench: {percepts['stench']}] [Breeze: {percepts['breeze']}] [Glitter: {percepts['glitter']}]")
 
         # 2. Agent reasons and decides action
